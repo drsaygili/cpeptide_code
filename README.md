@@ -1,7 +1,8 @@
 # cpeptide_code
 # 📊 Predicting Stimulated C-Peptide in Type 1 Diabetes Using Machine Learning: A Web-Based Tool from the T1D Exchange Registry
 
-This repository contains Python code for applying a **Random Forest machine learning model** on a diabetes-related dataset to predict an ordered categorical outcome (`PEAK_K_3`).
+This repository contains Python code for developing and applying a Random Forest machine learning model to predict stimulated C-peptide categories in individuals with type 1 diabetes, using clinical data from the T1D Exchange Registry.
+
 
 ---
 
@@ -22,7 +23,7 @@ The dataset includes the following columns (original names in Turkish, English t
 
 1️⃣ **Data Preprocessing**
 
-* Load data and drop rows with missing outcome (`PEAK_K_3`)
+* Load data and drop rows with missing
 * Apply `RobustScaler` to numeric features to reduce the influence of outliers
 
 2️⃣ **Model Development**
@@ -78,8 +79,7 @@ The script prints a **summary table** showing:
 
 ---
 
-## 📈 How to Run
+## 📈 Web-app link
+https://cpeptide.streamlit.app
 
-1️⃣ Place your data file as `data.xlsx` in the working directory.
-2️⃣ Run the Python script provided in this repository.
-3️⃣ Review the printed results for optimized model performance on both cross-validation and test data.
+
