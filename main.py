@@ -7,10 +7,10 @@ selected_columns_rfe = ['diyabet_tani_yasi', 'diyabet_suresi', 'GLU', 'A1C', 'CP
 # Variable names translations:
 # diyabet_tani_yasi = diabetes_diagnosis_age
 # diyabet_suresi = diabetes_duration
-# GLU = Glucose
+# GLU = non-fasting Glucose
 # A1C = Hemoglobin A1C
-# CPEP = C-Peptide
-# PEAK_K_3 = Peak Potassium level at 3rd hour (target variable)
+# CPEP = non-fasting C-Peptide
+# PEAK_K_3 = Peak C-Peptide category after MMTT stimulation
 
 df_rfe = df[selected_columns_rfe]
 df_rfe = df_rfe.dropna()
