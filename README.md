@@ -1,5 +1,5 @@
 # cpeptide_code
-# 📊 Diabetes Prediction Using Random Forest Classifier
+# 📊 Predicting Stimulated C-Peptide in Type 1 Diabetes Using Machine Learning: A Web-Based Tool from the T1D Exchange Registry
 
 This repository contains Python code for applying a **Random Forest machine learning model** on a diabetes-related dataset to predict an ordered categorical outcome (`PEAK_K_3`).
 
