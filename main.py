@@ -12,8 +12,99 @@ selected_columns_rfe = ['diyabet_tani_yasi', 'diyabet_suresi', 'GLU', 'A1C', 'CP
 # CPEP = non-fasting C-Peptide
 # PEAK_K_3 = Peak C-Peptide category after MMTT stimulation
 
-df_rfe = df[selected_columns_rfe]
-df_rfe = df_rfe.dropna()
+
+selected_columns = ['diyabet_tani_yasi', 'diyabet_suresi', 'GLU', 'A1C', 'CPEP', 'PEAK_K_3', 'DKAMeetCritEver2', 'SHSeizLoseConscEver2', 'duz_totalbasal_kg_K','GENDER','BKI']
+numeric_features = ["diyabet_tani_yasi", "diyabet_suresi", "GLU", "A1C", "CPEP"]
+
+# Kategorik değişken listesi
+categorical_columns = ['GENDER', 'duz_totalbasal_kg_K', 'DKAMeetCritEver2', 'SHSeizLoseConscEver2','PEAK_K_3']
+
+# Güvenli dönüşüm (.loc kullanarak)
+for col in categorical_columns:
+    df_selected_columns.loc[:, col] = df_selected_columns[col].astype('category')
+
+
+
+
+# Import required libraries
+from sklearn.impute import SimpleImputer
+import pandas as pd
+
+
+
+# Define numeric and categorical columns based on protocol
+numeric_cols = ['BKI', 'A1C']  # BMI = BKI, HbA1c = A1C
+categorical_cols = [
+    'GENDER',  # sex
+    'duz_totalbasal_kg_K',  # daily basal insulin dose ≥0.5 U/kg
+    'DKAMeetCritEver2',  # diabetic ketoacidosis history
+    'SHSeizLoseConscEver2'  # seizure with loss of consciousness history
+]
+
+# Check missing data percentages
+missing_percentages = df_selected_columns.isnull().mean() * 100
+print("Missing data percentage for each column:")
+print(missing_percentages)
+
+print(f"\nNumeric columns for median imputation: {numeric_cols}")
+print(f"Categorical columns for mode imputation: {categorical_cols}")
+
+# Apply median imputation to numeric variables
+if numeric_cols:
+    print("\nApplying median imputation to numeric columns with missing values")
+    median_imputer = SimpleImputer(strategy='median')
+    df_selected_columns.loc[:, numeric_cols] = median_imputer.fit_transform(df_selected_columns[numeric_cols])
+
+# Apply mode imputation to categorical variables
+if categorical_cols:
+    print("\nApplying mode imputation to categorical columns with missing values")
+    mode_imputer = SimpleImputer(strategy='most_frequent')
+    df_selected_columns.loc[:, categorical_cols] = mode_imputer.fit_transform(df_selected_columns[categorical_cols])
+
+# Check if any missing values remain
+missing_after = df_selected_columns.isnull().sum().sum()
+print(f"\nRemaining missing values after imputation: {missing_after}")
+
+# Ensure the target variable (PEAK_K_3) has no missing values
+if df_selected_columns["PEAK_K_3"].isnull().sum() > 0:
+    print("Warning: Target variable still has missing values. Removing these rows.")
+    df_selected_columns = df_selected_columns[df_selected_columns["PEAK_K_3"].notnull()]
+
+import pandas as pd
+import numpy as np
+from sklearn.impute import SimpleImputer
+from sklearn.feature_selection import SelectKBest, f_classif, mutual_info_classif, RFE
+from sklearn.ensemble import RandomForestClassifier
+
+# Mevcut DataFrame'den yeni bir kopya oluştur
+new_df2 = df_selected_columns
+
+# 🎯 Hedef değişken
+target = 'PEAK_K_3'
+
+# --- Feature Selection ---
+
+X = new_df2.drop(columns=[target])
+y = new_df2[target]
+
+
+# 3. Random Forest Feature Importances
+rf_model = RandomForestClassifier(random_state=42)
+rf_model.fit(X, y)
+rf_importance = pd.Series(rf_model.feature_importances_, index=X.columns).sort_values(ascending=False)
+print("\nRandom Forest Feature Importance:\n", rf_importance)
+
+# 4. Recursive Feature Elimination (RFE)
+rfe = RFE(estimator=RandomForestClassifier(random_state=42), n_features_to_select=5)
+rfe.fit(X, y)
+rfe_selected = X.columns[rfe.support_]
+print("\nRFE ile Seçilen Özellikler:\n", rfe_selected)
+
+# RFE ile Seçilen Özellikler: Index(['diyabet_tani_yasi', 'diyabet_suresi', 'GLU', 'A1C', 'CPEP'], dtype='object')
+
+rfe = ['diyabet_tani_yasi', 'diyabet_suresi', 'GLU', 'A1C', 'CPEP','PEAK_K_3']
+
+df_rfe = df_selected_columns[rfe]
 
 import numpy as np
 import pandas as pd
